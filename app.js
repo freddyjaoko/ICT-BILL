@@ -100,6 +100,52 @@ function gmailUrl(letter) {
   return `https://mail.google.com/mail/?${params.toString()}`;
 }
 
+function isMobile() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
+function isAndroid() {
+  return /Android/i.test(navigator.userAgent);
+}
+
+function gmailAppUrl(letter) {
+  const params = new URLSearchParams({
+    to: RECIPIENTS,
+    subject: SUBJECT,
+    body: letter,
+  });
+  return `googlegmail:///co?${params.toString()}`;
+}
+
+function androidGmailIntentUrl(letter) {
+  const appUrl = gmailAppUrl(letter);
+  const webUrl = gmailUrl(letter);
+  const pathAndQuery = appUrl.replace("googlegmail://", "");
+  return `intent://${pathAndQuery}#Intent;scheme=googlegmail;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
+}
+
+function openGmail(letter) {
+  const webUrl = gmailUrl(letter);
+  if (!isMobile()) {
+    window.open(webUrl, "_blank", "noopener");
+    return;
+  }
+
+  if (isAndroid()) {
+    window.location.href = androidGmailIntentUrl(letter);
+    return;
+  }
+
+  const started = Date.now();
+  window.location.href = gmailAppUrl(letter);
+  window.setTimeout(() => {
+    if (document.hidden) return;
+    if (Date.now() - started < 1600) {
+      window.location.href = webUrl;
+    }
+  }, 800);
+}
+
 function populateCounties() {
   const counties = Object.keys(COUNTIES);
   for (const county of counties) {
@@ -158,7 +204,7 @@ form.addEventListener("change", refresh);
 gmailBtn.addEventListener("click", () => {
   const values = getValues();
   if (!isComplete(values)) return;
-  window.open(gmailUrl(currentLetter()), "_blank", "noopener");
+  openGmail(currentLetter());
 });
 
 copyBtn.addEventListener("click", async () => {
