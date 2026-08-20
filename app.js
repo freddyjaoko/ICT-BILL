@@ -90,14 +90,12 @@ function buildLetter(values) {
 }
 
 function gmailUrl(letter) {
-  const params = new URLSearchParams({
-    view: "cm",
-    fs: "1",
-    to: RECIPIENTS,
-    su: SUBJECT,
-    body: letter,
-  });
-  return `https://mail.google.com/mail/?${params.toString()}`;
+  return (
+    "https://mail.google.com/mail/?view=cm&fs=1" +
+    `&to=${encodeURIComponent(RECIPIENTS)}` +
+    `&su=${encodeURIComponent(SUBJECT)}` +
+    `&body=${encodeURIComponent(letter)}`
+  );
 }
 
 function isMobile() {
@@ -109,12 +107,12 @@ function isAndroid() {
 }
 
 function gmailAppUrl(letter) {
-  const params = new URLSearchParams({
-    to: RECIPIENTS,
-    subject: SUBJECT,
-    body: letter,
-  });
-  return `googlegmail:///co?${params.toString()}`;
+  return (
+    "googlegmail:///co" +
+    `?to=${encodeURIComponent(RECIPIENTS)}` +
+    `&subject=${encodeURIComponent(SUBJECT)}` +
+    `&body=${encodeURIComponent(letter)}`
+  );
 }
 
 function androidGmailIntentUrl(letter) {
