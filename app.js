@@ -116,10 +116,13 @@ function gmailAppUrl(letter) {
 }
 
 function androidGmailIntentUrl(letter) {
-  const appUrl = gmailAppUrl(letter);
-  const webUrl = gmailUrl(letter);
-  const pathAndQuery = appUrl.replace("googlegmail://", "");
-  return `intent://${pathAndQuery}#Intent;scheme=googlegmail;package=com.google.android.gm;S.browser_fallback_url=${encodeURIComponent(webUrl)};end`;
+  const query =
+    `?subject=${encodeURIComponent(SUBJECT)}` +
+    `&body=${encodeURIComponent(letter)}`;
+  return (
+    `intent://${RECIPIENTS}${query}` +
+    "#Intent;scheme=mailto;package=com.google.android.gm;end"
+  );
 }
 
 function openGmail(letter) {
