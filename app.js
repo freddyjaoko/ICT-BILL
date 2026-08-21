@@ -1,6 +1,7 @@
 const RECIPIENTS = [
   "cna@parliament.go.ke",
   "financecommitteena@parliament.go.ke",
+  "clerk@parliament.go.ke",
 ].join(",");
 
 const SUBJECT =
